@@ -9,12 +9,12 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
 
-class PoststedLaster {
+class PoststedLoader {
 
     static Set<Poststed> hentPoststeder() {
         final String MESSAGE = "Klarte ikke å lese Postnummerregister-ansi.txt";
         //Get file from resources folder
-        ClassLoader classLoader = PoststedLaster.class.getClassLoader();
+        ClassLoader classLoader = PoststedLoader.class.getClassLoader();
         Optional<URL> fraRessurs = Optional.ofNullable(classLoader.getResource("data/Postnummerregister-ansi.txt"));
         File file = fraRessurs.map(url -> new File(url.getFile())).orElseThrow(() -> new RuntimeException(MESSAGE));
         Set<Poststed> poststeder = new HashSet<>();

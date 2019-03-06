@@ -20,7 +20,7 @@ public class NavVisitorProducer {
     private final static Logger LOG = LogManager.getLogger();
 
     public static void main(String[] args) {
-        final Set<Poststed> poststeder = PoststedLaster.hentPoststeder();
+        final Set<Poststed> poststeder = PoststedLoader.hentPoststeder();
         final Properties props = new Properties();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
@@ -69,7 +69,7 @@ public class NavVisitorProducer {
                 });
             });
             try {
-                TimeUnit.SECONDS.sleep(2);
+                TimeUnit.MILLISECONDS.sleep(2);
             } catch (InterruptedException e) {
                 LOG.error("Failed to sleep");
             }
