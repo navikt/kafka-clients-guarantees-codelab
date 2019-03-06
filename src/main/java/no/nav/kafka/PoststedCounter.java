@@ -13,7 +13,7 @@ public class PoststedCounter {
 
     public void count(final Poststed poststed) {
         if (poststed.getStedsnavn().startsWith("K")) {
-//            throw new RuntimeException("Lagring av poststed feilet! --> " + poststed);
+            throw new RuntimeException("Lagring av poststed feilet! --> " + poststed);
         }
         final Integer currentCount = count.getOrDefault(poststed.getStedsnavn(), 0);
         count.put(poststed.getStedsnavn(), currentCount + 1);

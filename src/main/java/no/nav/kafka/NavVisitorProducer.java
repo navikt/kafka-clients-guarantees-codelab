@@ -69,7 +69,7 @@ public class NavVisitorProducer {
                 });
             });
             try {
-                TimeUnit.MILLISECONDS.sleep(2);
+                TimeUnit.SECONDS.sleep(2);
             } catch (InterruptedException e) {
                 LOG.error("Failed to sleep");
             }
