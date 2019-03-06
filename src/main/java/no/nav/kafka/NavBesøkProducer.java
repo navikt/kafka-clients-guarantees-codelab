@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
-import java.util.stream.IntStream;
+import java.util.concurrent.TimeUnit;
 
 public class NavBesøkProducer {
 
@@ -21,11 +21,6 @@ public class NavBesøkProducer {
 
     public static void main(String[] args) {
         final Set<Poststed> poststeder = PoststedLaster.hentPoststeder();
-
-
-        /// docker run --net host confluentinc/cp-kafka kafka-topics --create  --zookeeper localhost:2181 -topic test2 --replication-factor 3 --partitions 5
-
-
         final Properties props = new Properties();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
@@ -39,8 +34,16 @@ public class NavBesøkProducer {
 
         final KafkaProducer<String, String> producer = new KafkaProducer<>(props);
 
+        // close producer on shutdown
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            LOG.info("closing producer...");
+            producer.flush();
+            producer.close();
+            LOG.info("done!");
+        }));
 
-        IntStream.range(1, 11).forEach(n -> {
+
+        while (true) {
 
             Optional<Poststed> randomPoststed = poststeder.stream().skip((int) (poststeder.size() * Math.random())).findFirst();
             randomPoststed.ifPresent(poststed -> {
@@ -48,7 +51,9 @@ public class NavBesøkProducer {
                 final String kommuneNummer = poststed.getKommune();
                 final String poststedJson = new Gson().newBuilder().create().toJson(poststed);
 
-                final ProducerRecord<String, String> record = new ProducerRecord<>("test2", kommuneNummer, poststedJson);
+
+                // @todo: Create topic 'NavVisitorLocation'
+                final ProducerRecord<String, String> record = new ProducerRecord<>("TODO", kommuneNummer, poststedJson);
 
                 //produce record
                 producer.send(record, new Callback() {
@@ -63,13 +68,13 @@ public class NavBesøkProducer {
                     }
                 });
             });
+            try {
+                TimeUnit.SECONDS.sleep(2);
+            } catch (InterruptedException e) {
+                LOG.error("Failed to sleep");
+            }
 
-        });
-        // flush data
-        producer.flush();
-        // flush and close producer
-        producer.close();
+        }
 
     }
-
 }
