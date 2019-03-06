@@ -15,7 +15,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-public class NavBesøkProducer {
+public class NavVisitorProducer {
 
     private final static Logger LOG = LogManager.getLogger();
 
