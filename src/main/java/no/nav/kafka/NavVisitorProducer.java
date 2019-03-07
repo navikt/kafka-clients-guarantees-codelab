@@ -48,12 +48,12 @@ public class NavVisitorProducer {
             Optional<Poststed> randomPoststed = poststeder.stream().skip((int) (poststeder.size() * Math.random())).findFirst();
             randomPoststed.ifPresent(poststed -> {
 
-                final String kommuneNummer = poststed.getKommune();
+                final String stedsnavn = poststed.getStedsnavn();
                 final String poststedJson = new Gson().newBuilder().create().toJson(poststed);
 
 
                 // @todo: Create topic 'NavVisitorLocation'
-                final ProducerRecord<String, String> record = new ProducerRecord<>("TODO", kommuneNummer, poststedJson);
+                final ProducerRecord<String, String> record = new ProducerRecord<>("TODO", stedsnavn, poststedJson);
 
                 //produce record
                 producer.send(record, new Callback() {
